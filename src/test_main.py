@@ -1,55 +1,41 @@
 """Tests for the Main module."""
-import pytest
+DONORS = {
+    "Regenal Grant": {
+        "Jan 2016": 200,
+        "May 2015": 100,
+        "Jan 2014": 50,
+        "Dec 2013": 25,
+    },
+
+    "Conor Clary": {
+        "Feb 2016": 25,
+        "Mar 2015": 114,
+        "Dec 2014": 37,
+        "Nov 2013": 2,
+    },
+
+    "Dave Hume": {
+        "Aug 2016": 125,
+        "Apr 2015": 359,
+        "Jan 2014": 378,
+        "Sep 2013": 2450,
+        "Nov 2012": 2,
+    },
+
+    "Chris Ladoux": {
+        "Nov 2002": 20000,
+    },
+}
 
 
-MAIN_INPUT_TABLE = [
-    [1, "Conor Clary", "Apr 2014", 200, '''Dear Conor Clary,
-    Thank you for your continued generous support in Apr 2014. We hope you have a fantastic year and we look forward to your continued generous support.'''],
-]
-
-SEND_THANKS_TABLE = []
-DONATION_PROMPT_TABLE = []
-DONATION_DATE_TABLE = []
-CREATE_REPORT_TABLE = []
-
-
-@pytest.mark.parametrize("answer, result", MAIN_INPUT_TABLE)
-def test_main(answer, result):
-    """Test the main function."""
-    from main import main
-    assert main() == result
-
-
-@pytest.mark.parametrize("thanking_donor, ty_answer, result", SEND_THANKS_TABLE)
-def test_send_thanks(thanking_donor, ty_answer, result):
-    """Test the send thanks function."""
+def test_send_thanks():
+    """Test the send_thanks func."""
     from main import send_thanks
-    assert send_thanks(thanking_donor, ty_answer) == result
+    assert send_thanks('"Chris Ladoux": {"Nov 2002": 20000, }', 'Chris Ladoux') == """Dear Chris Ladoux,
+    Thank you for your continued generous support in Nov 2002. We hope you have a fantastic year and we look forward to your continued generous support."""
 
 
-@pytest.mark.parametrize("ty_answer, result", DONATION_PROMPT_TABLE)
-def test_donation_prompt(ty_answer, result):
-    """Test the donation prompt function."""
-    from main import donation_prompt
-    assert donation_prompt(ty_answer) == result
-
-
-@pytest.mark.parametrize("donation_amt, ty_answer, result", DONATION_DATE_TABLE)
-def test_donation_date(donation_amt, ty_answer, result):
-    """Test the donation date function."""
-    from main import donation_date
-    assert donation_date(donation_amt, ty_answer) == result
-
-
-@pytest.mark.parametrize("donors, result", CREATE_REPORT_TABLE)
-def test_create_report(donors, result):
-    """Test the create report function."""
+def test_create_report():
+    """Test the Create Report Function."""
     from main import create_report
-    assert create_report(donors) == result
-
-
-def test_quit_script():
-    """Test the quit script function."""
-    from main import quit_script
-    import sys
-    assert quit_script() == sys.exit(0)
+    assert create_report(DONORS) == [('Chris Ladoux', 20000), ('Dave Hume', 3314), ('Regenal Grant', 375), ('Conor Clary', 178)]
