@@ -30,89 +30,103 @@ DONORS = {
 email_template_first_timer = '''Dear {donor},
     Thank you for your generous support in {recent_year}. We hope you have a fantastic year and we look forward to your continued generous support.'''
 
-email_template_non_virgin = '''Dear {donor}, 
+email_template_non_virgin = '''Dear {donor},
     Thank you for your continued generous support in {recent_year}. We hope you have a fantastic year and we look forward to your continued generous support.'''
 
 
-def main():
+def main(mode='prompt'):
     """The main function of this module."""
-    question = """How can I help you today?
-    [1]Send a Thank You
-    [2]Create a Report
-    [3]Quit Mailroom
-    """
-    answer = str(input(question))
+    if mode == 'prompt':
+        answer = str(input("""How can I help you today?
+        [1]Send a Thank You
+        [2]Create a Report
+        [3]Quit Mailroom
+        """))
+    else:
+        answer = mode
     if answer == '1':
-        do_this = thank_you()
+        thank_you()
     elif answer == '2':
-        do_this = create_report(DONORS)
+        create_report(DONORS)
     elif answer == '3':
-        do_this = quit_script()
+        quit_script()
     else:
         print('Invalid Answer')
-        do_this = main()
-    return do_this()
+    return answer
 
 
-def thank_you():
+def thank_you(mode='prompt', mode2='prompt', mode3='prompt'):
     """Run this function when SEND A THANK YOU is chosen."""
-    ty_answer = str(input("Please enter a name or type 'list' to receive a list of donor names. Type 'cancel' to go back to main menu "))
+    # Special thanks to Julien Wilson for help on this one.
+    if mode == 'prompt':
+        ty_answer = str(input("Please enter a name or type 'list' to receive a list of donor names. Type 'cancel' to go back to main menu "))
+    else:
+        ty_answer = mode
     ty_answer = ty_answer.title()
     if ty_answer.lower() == 'cancel':
-        main()
+        return
     elif ty_answer.lower() == "list":
         donors_list = list(DONORS)
+        print("\033c")
         for i in range(len(donors_list)):
             print(donors_list[i])
-            thank_you()
+        thank_you(mode, mode2, mode3)
     elif ty_answer.title() not in DONORS.keys():
         DONORS.setdefault(ty_answer, {'': ''})
-        donation_prompt(ty_answer)
+        donation_prompt(ty_answer, mode2, mode3)
         DONORS[ty_answer].pop("")
         thanking_donor = DONORS[ty_answer]
+        send_thanks(thanking_donor, ty_answer)
     else:
-        donation_prompt(ty_answer)
+        donation_prompt(ty_answer, mode2, mode3)
         thanking_donor = DONORS[ty_answer]
-    return send_thanks(thanking_donor, ty_answer)
+        send_thanks(thanking_donor, ty_answer)
+    return ty_answer
 
 
 def send_thanks(thanking_donor, ty_answer):
     """Print out an email thanking donor."""
     if len(list(thanking_donor)) > 1:
-        print(email_template_non_virgin.format(donor=ty_answer, recent_year=list(DONORS[ty_answer].keys())[0]))
+        email = email_template_non_virgin.format(donor=ty_answer, recent_year=list(DONORS[ty_answer].keys())[-1])
     else:
-        print(email_template_first_timer.format(donor=ty_answer, recent_year=list(DONORS[ty_answer].keys())[0]))
-    main()
+        email = email_template_first_timer.format(donor=ty_answer, recent_year=list(DONORS[ty_answer].keys())[0])
+    print("\033c")
+    print(email)
+    return email
 
 
-def donation_prompt(ty_answer):
+def donation_prompt(ty_answer, mode='prompt', mode2='prompt'):
     """Prompt for donation amount and date."""
     import math
-    donation_amt = input('''How much did {donor} donate? Type "cancel" to return to main menu.
-        '''.format(donor=ty_answer))
-    if donation_amt.lower() == 'cancel':
-        main()
-        # break
-    while True:
+    if mode == 'prompt':
+        donation_amt = input('''How much did {donor} donate? Type "cancel" to return to main menu.'''.format(donor=ty_answer))
+    else:
+        donation_amt = mode
+    while donation_amt is not 'cancel':
         try:
             math.isnan(float(donation_amt))
             break
         except ValueError:
             print('That is not a valid number, please enter an integer or floating decimal ')
             donation_prompt(ty_answer)
-    return donation_date(donation_amt, ty_answer)
-
-
-def donation_date(donation_amt, ty_answer):
-    """Update Donors list with new donation date and amount for donor."""
-    donation_date = input('When did they donate? (Please keep our db clean by adding in the Mon YYYY e.g "Dec 2016"). Type "cancel" to return to main menu. ')
+        except AttributeError:
+            pass
+    if type(donation_amt) is str and donation_amt.lower() == 'cancel':
+        return
+    if mode2 == 'prompt':
+        donation_date = input('When did they donate? (Please keep our db clean by adding in the Mon YYYY e.g "Dec 2016"). Type "cancel" to return to main menu. ')
+    else:
+        donation_date = mode2
     if donation_date.lower() == 'cancel':
-        main()
-    print(DONORS)
-    DONORS[ty_answer].update({donation_date: int(donation_amt)})
-    print(DONORS, 'DONORS Updated')
-    return DONORS
+        return None
+    else:
+        DONORS[ty_answer].update({donation_date: int(donation_amt)})
+        return DONORS[ty_answer][donation_date]
+    return ty_answer
 
+
+# def donation_date(donation_amt, ty_answer, mode='prompt'):
+#     """Update Donors list with new donation date and amount for donor."""
 
 def create_report(donors):
     """Print out a report of Donor performance."""
@@ -125,7 +139,8 @@ def create_report(donors):
         donors_list.append((key, money,))
     # Sort donors list by money in tuple (tup[1]) descending.
     donors_list2 = sorted(donors_list, key=lambda tup: tup[1], reverse=True)
-    print("\033c")
+    print(donors_list2)
+    # print("\033c")
     print(("{:^20} | {:^20} | {:^20} | {:^20}").format('Donor Name', 'Total Money Donated', 'Times Donated', 'Avg Donation Amount'))
     # Print it all out + total donations and avg donation amount.
     for tup_of_name_and_money in donors_list2:
@@ -138,7 +153,7 @@ def create_report(donors):
             print_total_times = str(total_times_donated)
             print_avg = str(avg_donation_amt)
             print(("{:<20} | {:^20} | {:^20} | {:^20}").format(print_name, print_total_money, print_total_times, print_avg))
-    main()
+    return donors_list2
 
 
 def quit_script():
@@ -148,4 +163,5 @@ def quit_script():
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
