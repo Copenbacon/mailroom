@@ -25,7 +25,23 @@ DONORS = {
     "Chris Ladoux": {
         "Nov 2002": 20000,
     },
+
+    "Jerry Reed": {
+        "Apr 2016": 7000
+    }
 }
+
+
+def test_thank_you():
+    """Test thank you function."""
+    from main import thank_you
+    assert thank_you('Jerry Reed', 7000, 'Apr 2016') == 'Jerry Reed'
+
+
+def test_main():
+    """Test the main function."""
+    from main import main
+    assert main('Test') == 'Test'
 
 
 def test_send_thanks():
@@ -35,7 +51,13 @@ def test_send_thanks():
     Thank you for your continued generous support in Nov 2002. We hope you have a fantastic year and we look forward to your continued generous support."""
 
 
+def test_donation_prompt():
+    """Test the donation prompt function."""
+    from main import donation_prompt
+    assert donation_prompt('Jerry Reed', 7000, 'Apr 2016') == 7000
+
+
 def test_create_report():
     """Test the Create Report Function."""
     from main import create_report
-    assert create_report(DONORS) == [('Chris Ladoux', 20000), ('Dave Hume', 3314), ('Regenal Grant', 375), ('Conor Clary', 178)]
+    assert create_report(DONORS) == [('Chris Ladoux', 20000), ('Jerry Reed', 7000), ('Dave Hume', 3314), ('Regenal Grant', 375), ('Conor Clary', 178)]
