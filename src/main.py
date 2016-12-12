@@ -140,7 +140,7 @@ def create_report(donors):
     # Sort donors list by money in tuple (tup[1]) descending.
     donors_list2 = sorted(donors_list, key=lambda tup: tup[1], reverse=True)
     print(donors_list2)
-    # print("\033c")
+    print("\033c")
     print(("{:^20} | {:^20} | {:^20} | {:^20}").format('Donor Name', 'Total Money Donated', 'Times Donated', 'Avg Donation Amount'))
     # Print it all out + total donations and avg donation amount.
     for tup_of_name_and_money in donors_list2:
