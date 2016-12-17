@@ -33,7 +33,7 @@ DONORS = {
 
 
 def test_thank_you():
-    """Test thank you function."""
+    """Test thank you function."""  
     from main import thank_you
     assert thank_you('Jerry Reed', 7000, 'Apr 2016') == 'Jerry Reed'
 
@@ -41,7 +41,7 @@ def test_thank_you():
 def test_main():
     """Test the main function."""
     from main import main
-    assert main('Test') == 'Test'
+    assert main('Test') == 'Invalid Answer'
 
 
 def test_send_thanks():
@@ -60,4 +60,4 @@ def test_donation_prompt():
 def test_create_report():
     """Test the Create Report Function."""
     from main import create_report
-    assert create_report(DONORS) == [('Chris Ladoux', 20000), ('Jerry Reed', 7000), ('Dave Hume', 3314), ('Regenal Grant', 375), ('Conor Clary', 178)]
+    assert create_report(DONORS) is str

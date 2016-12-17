@@ -12,7 +12,7 @@ setup(
     license="MIT",
     package_dir={'': 'src'},
     py_modules=['main'],
-    install_requires=['numpy'],
+    install_requires=[],
     extras_require={
         "test": ['pytest', 'pytest-watch', 'pytest-cov', 'tox'],
     },

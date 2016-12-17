@@ -45,14 +45,13 @@ def main(mode='prompt'):
     else:
         answer = mode
     if answer == '1':
-        thank_you()
+        return thank_you()
     elif answer == '2':
-        create_report(DONORS)
+        return create_report(DONORS)
     elif answer == '3':
-        quit_script()
+        return quit_script()
     else:
-        print('Invalid Answer')
-    return answer
+        return 'Invalid Answer'
 
 
 def thank_you(mode='prompt', mode2='prompt', mode3='prompt'):
@@ -96,7 +95,7 @@ def send_thanks(thanking_donor, ty_answer):
 
 
 def donation_prompt(ty_answer, mode='prompt', mode2='prompt'):
-    """Prompt for donation amount and date."""
+    """Prompt for donation amount and date. Passing in modes bypasses the prompts for testing purposes."""
     import math
     if mode == 'prompt':
         donation_amt = input('''How much did {donor} donate? Type "cancel" to return to main menu.'''.format(donor=ty_answer))
@@ -107,10 +106,8 @@ def donation_prompt(ty_answer, mode='prompt', mode2='prompt'):
             math.isnan(float(donation_amt))
             break
         except ValueError:
-            print('That is not a valid number, please enter an integer or floating decimal ')
+            print('That is not a valid number, please enter an integer or floating decimal')
             donation_prompt(ty_answer)
-        except AttributeError:
-            pass
     if type(donation_amt) is str and donation_amt.lower() == 'cancel':
         return
     if mode2 == 'prompt':
@@ -122,7 +119,6 @@ def donation_prompt(ty_answer, mode='prompt', mode2='prompt'):
     else:
         DONORS[ty_answer].update({donation_date: int(donation_amt)})
         return DONORS[ty_answer][donation_date]
-    return ty_answer
 
 
 # def donation_date(donation_amt, ty_answer, mode='prompt'):
@@ -138,12 +134,16 @@ def create_report(donors):
             money += (DONORS[key][value])
         donors_list.append((key, money,))
     # Sort donors list by money in tuple (tup[1]) descending.
-    donors_list2 = sorted(donors_list, key=lambda tup: tup[1], reverse=True)
-    print(donors_list2)
+    donors_list = sorted(donors_list, key=lambda tup: tup[1], reverse=True)
+    return print_report(donors_list)
+
+
+def print_report(donors_list):
+    """Clear the console and print a clean list of Donors and donation stats."""
     print("\033c")
     print(("{:^20} | {:^20} | {:^20} | {:^20}").format('Donor Name', 'Total Money Donated', 'Times Donated', 'Avg Donation Amount'))
     # Print it all out + total donations and avg donation amount.
-    for tup_of_name_and_money in donors_list2:
+    for tup_of_name_and_money in donors_list:
         for idx in range(0, len(tup_of_name_and_money), 2):
             print_name = tup_of_name_and_money[idx]
             total_money_donated = tup_of_name_and_money[idx + 1]
@@ -153,7 +153,6 @@ def create_report(donors):
             print_total_times = str(total_times_donated)
             print_avg = str(avg_donation_amt)
             print(("{:<20} | {:^20} | {:^20} | {:^20}").format(print_name, print_total_money, print_total_times, print_avg))
-    return donors_list2
 
 
 def quit_script():
