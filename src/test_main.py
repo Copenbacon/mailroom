@@ -60,4 +60,4 @@ def test_donation_prompt():
 def test_create_report():
     """Test the Create Report Function."""
     from main import create_report
-    assert create_report(DONORS) is str
+    assert create_report(DONORS) == DONORS

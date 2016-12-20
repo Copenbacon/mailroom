@@ -135,7 +135,8 @@ def create_report(donors):
         donors_list.append((key, money,))
     # Sort donors list by money in tuple (tup[1]) descending.
     donors_list = sorted(donors_list, key=lambda tup: tup[1], reverse=True)
-    return print_report(donors_list)
+    print_report(donors_list)
+    return DONORS
 
 
 def print_report(donors_list):
