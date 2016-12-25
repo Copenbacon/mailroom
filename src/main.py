@@ -120,9 +120,6 @@ def donation_prompt(ty_answer, mode='prompt', mode2='prompt'):
         return DONORS[ty_answer][donation_date]
 
 
-# def donation_date(donation_amt, ty_answer, mode='prompt'):
-#     """Update Donors list with new donation date and amount for donor."""
-
 def create_report(donors):
     """Print out a report of Donor performance."""
     donors_list = []
