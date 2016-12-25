@@ -101,23 +101,22 @@ def donation_prompt(ty_answer, mode='prompt', mode2='prompt'):
         donation_amt = input('''How much did {donor} donate? Type "cancel" to return to main menu.'''.format(donor=ty_answer))
     else:
         donation_amt = mode
-    while donation_amt is not 'cancel':
+    if donation_amt is not 'cancel':
         try:
             math.isnan(float(donation_amt))
-            break
         except ValueError:
             print('That is not a valid number, please enter an integer or floating decimal')
             donation_prompt(ty_answer)
-    if type(donation_amt) is str and donation_amt.lower() == 'cancel':
+    elif type(donation_amt) is str and donation_amt.lower() == 'cancel':
         return
     if mode2 == 'prompt':
         donation_date = input('When did they donate? (Please keep our db clean by adding in the Mon YYYY e.g "Dec 2016"). Type "cancel" to return to main menu. ')
     else:
         donation_date = mode2
     if donation_date.lower() == 'cancel':
-        return None
+        return
     else:
-        DONORS[ty_answer].update({donation_date: int(donation_amt)})
+        DONORS[ty_answer].update({donation_date: float(donation_amt)})
         return DONORS[ty_answer][donation_date]
 
 

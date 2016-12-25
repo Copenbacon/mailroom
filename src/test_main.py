@@ -33,15 +33,21 @@ DONORS = {
 
 
 def test_thank_you():
-    """Test thank you function."""  
+    """Test thank you function."""
     from main import thank_you
     assert thank_you('Jerry Reed', 7000, 'Apr 2016') == 'Jerry Reed'
 
 
-def test_main():
-    """Test the main function."""
+def test_main_invalid_answer():
+    """Test the main function for an Invalid Answer."""
     from main import main
     assert main('Test') == 'Invalid Answer'
+
+
+def test_main_create_report():
+    """Test the main function for a report creation."""
+    from main import main, create_report
+    assert main('2') == create_report(DONORS)
 
 
 def test_send_thanks():
@@ -61,3 +67,21 @@ def test_create_report():
     """Test the Create Report Function."""
     from main import create_report
     assert create_report(DONORS) == DONORS
+
+
+def test_thank_you_cancel_return_none():
+    """Test that a cancel input returns none."""
+    from main import thank_you
+    assert thank_you("cancel") is None
+
+
+def test_donation_prompt_cancel_return_none():
+    """Make sure cancel, exits the donation prompt."""
+    from main import donation_prompt
+    assert donation_prompt("Jerry Reed", "cancel") is None
+
+
+def test_donation_prompt_arg3_cancel_return_none():
+    """Make sure cancel, exits the donation prompt."""
+    from main import donation_prompt
+    assert donation_prompt("Jerry Reed", "200", "cancel") is None
